@@ -8,13 +8,12 @@ from art import logo
 
 ############### Our Blackjack House Rules #####################
 
-## DONE The deck is unlimited in size. 
-## DONE There are no jokers. 
-## DONE The Jack/Queen/King all count as 10.
+## The deck is unlimited in size. 
+## There are no jokers. 
+## The Jack/Queen/King all count as 10.
 ## The the Ace can count as 11 or 1.
-## DONE Use the following list as the deck of cards: cards = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
-## DONE The cards in the list have equal probability of being drawn.
-## DONE Cards are not removed from the deck as they are drawn.
+## The cards in the list have equal probability of being drawn.
+## Cards are not removed from the deck as they are drawn.
 
 # rules:
 # 1. deal two cards to player and dealer
@@ -101,7 +100,6 @@ def dealer_turn(player_cards, dealer_cards):
     print("You surpassed the dealers hand, you won!")
     return
     
-
 print(logo)
 
 player_cards = []
