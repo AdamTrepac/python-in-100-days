@@ -18,8 +18,5 @@ for steps in range(5):
     rick.penup()
     rick.forward(10)
 
-
-
-
 screen = Screen()
 screen.exitonclick()
