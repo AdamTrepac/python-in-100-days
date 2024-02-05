@@ -6,9 +6,20 @@ from turtle import Screen
 rick = Turtle()
 rick.shape("turtle")
 
-for _ in range(4):
-    rick.forward(100)
-    rick.left(90)
+for steps in range(10):
+    for color in ('green', 'white'):
+        rick.color(color)
+        rick.forward(10)
+
+rick.color('black')
+for steps in range(5):
+    rick.pendown()
+    rick.forward(10)
+    rick.penup()
+    rick.forward(10)
+
+
+
 
 screen = Screen()
 screen.exitonclick()
