@@ -20,8 +20,9 @@ screen = Screen()
 screen.colormode(255)
 screen.bgcolor("black")
 
-joan.pencolor(random_int(1, 255), random_int(1, 255), random_int(1, 255))
-joan.circle(100)
+# The better way to do this is with the circle() function, but oh well
+# joan.pencolor(random_int(1, 255), random_int(1, 255), random_int(1, 255))
+# joan.circle(100)
 
 for _ in range(int(DEGREES/SPIRO_ANGLE)):
     joan.left(SPIRO_ANGLE)
