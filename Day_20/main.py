@@ -10,12 +10,25 @@ Snake game! There are 7 steps to the game:
 
 """
 from turtle import Turtle, Screen
+from functools import partial
+
+def move_up(snake: Turtle):
+    if snake.heading() != 270:
+        snake.setheading(90)
+
+def move_down(snake: Turtle):
+    if snake.heading() != 90:
+        snake.setheading(270)
+
+def move_left(snake: Turtle):
+    if snake.heading() != 0:
+        snake.setheading(180)
+
+def move_right(snake: Turtle):
+    if snake.heading() != 180:
+        snake.setheading(0)
 
 STEP = 20
-
-# def move_up(snake: Turtle):
-#     if snake.heading() != 270:
-#         snake.setheading(90)
 
 def main():
     SCREEN_WIDTH = 500
@@ -23,7 +36,6 @@ def main():
     screen = Screen()
     screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
     screen.register_shape("mySquare", ((0, 0), (0, STEP-1), (STEP-1, STEP-1), (STEP-1, 0)))
-    # screen.bgcolor("blue")
 
     # Draw the initial snake
     snake = Turtle("mySquare")
@@ -35,9 +47,11 @@ def main():
         snake.forward(STEP)
 
     snake.speed(1)
-
-    # screen.onkeypress(fun = move_up(snake), key = "Up")
     # screen.exitonclick()
+    screen.onkeypress(fun = partial(move_up, snake), key = "Up")
+    screen.onkeypress(fun = partial(move_down, snake), key = "Down")
+    screen.onkeypress(fun = partial(move_left, snake), key = "Left")
+    screen.onkeypress(fun = partial(move_right, snake), key = "Right")
 
     # Moving the snake
     while True:
@@ -45,7 +59,7 @@ def main():
         snake.forward(STEP)
         snake.clearstamp(snake_array[0])
         snake_array.pop(0)
-    
+        screen.listen()
 
 if __name__ == "__main__":
     main()
