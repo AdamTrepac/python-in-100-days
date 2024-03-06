@@ -10,70 +10,89 @@ Snake game! There are 7 steps to the game:
 
 """
 from turtle import Turtle, Screen
-from functools import partial
 
-snake_heading = 0
+class Snake():
 
-def move_up(snake: Turtle):
-    if snake_heading != 270:
-        snake.setheading(90)
+    def __init__(self, step) -> None:
+        self.snake = Turtle("mySquare")
+        self.snake_array = []
+        self.snake.penup()
+        self.snake.color("green")
+        self.snake_heading = 0
+        self.step = step
 
-def move_down(snake: Turtle):
-    if snake_heading != 90:
-        snake.setheading(270)
+    def create_snake(self):
+        """Draw the initial snake of 3 pieces long
+        """
+        self.snake.speed(0)
+        for _ in range(3):
+            self.snake_array.append(self.snake.stamp())
+            self.snake.forward(self.step)
+        print(self.snake_array)
 
-def move_left(snake: Turtle):
-    if snake_heading != 0:
-        snake.setheading(180)
+    def update_snake(self):
+        """Move the snake forward, stamp at the new location, and 
+        deletes the stamp at
+        the oldest location in the array. 
+        """
+        self.snake_heading = self.snake.heading()
+        self.snake.forward(self.step)
+        self.snake_array.append(self.snake.stamp())
+        self.snake.clearstamp(self.snake_array[0])
+        self.snake_array.pop(0)
+        for _ in range(10):     # delay the snake's speed
+            self.snake.forward(0)
 
-def move_right(snake: Turtle):
-    if snake_heading != 180:
-        snake.setheading(0)
+    def move_up(self):
+        if self.snake_heading != 270:
+            self.snake.setheading(90)
 
-STEP = 20
+    def move_down(self):
+        if self.snake_heading != 90:
+            self.snake.setheading(270)
+
+    def move_left(self):
+        if self.snake_heading != 0:
+            self.snake.setheading(180)
+
+    def move_right(self):
+        if self.snake_heading != 180:
+            self.snake.setheading(0)
+
+    snake_up = move_up
+    snake_down = move_down
+    snake_left = move_left
+    snake_right = move_right
+
 
 def main():
     SCREEN_WIDTH = 600
     SCREEN_HEIGHT = 600
+    STEP = 20
+
     screen = Screen()
     screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
     # screen.setworldcoordinates(0, SCREEN_HEIGHT, SCREEN_WIDTH, 0)
-    screen.register_shape("mySquare", ((STEP/2, STEP/2), (-STEP/2, STEP/2), (-STEP/2, -STEP/2), (STEP/2, -STEP/2)))
-    
-    # Draw the initial snake
-    snake = Turtle("mySquare")
-    snake_array = []
-    snake.penup()
-    snake.color("green")
-    for _ in range(3):
-        snake_array.append(snake.stamp())
-        snake.forward(STEP)
-    print(snake_array)
-    # generate food
-    food = Turtle("mySquare")
-    food.penup()
-    food.color("red")
+    screen.register_shape("mySquare",
+        ((STEP/2, STEP/2),
+        (-STEP/2, STEP/2),
+        (-STEP/2, -STEP/2),
+        (STEP/2, -STEP/2)))
 
-    snake.speed(0)
+    snake = Snake(STEP)
+    snake.create_snake()
+
     # screen.exitonclick()
-    screen.onkeypress(fun = partial(move_up, snake), key = "Up")
-    screen.onkeypress(fun = partial(move_down, snake), key = "Down")
-    screen.onkeypress(fun = partial(move_left, snake), key = "Left")
-    screen.onkeypress(fun = partial(move_right, snake), key = "Right")
+    screen.onkeypress(fun = snake.snake_up, key = "Up")
+    screen.onkeypress(fun = snake.snake_down, key = "Down")
+    screen.onkeypress(fun = snake.snake_left, key = "Left")
+    screen.onkeypress(fun = snake.snake_right, key = "Right")
 
     # Moving the snake
     screen.listen()
     while True:
-        global snake_heading
-        snake_heading = snake.heading()
-        snake_array.append(snake.stamp())
-        print(snake_array[0])
-        snake.clearstamp(snake_array[0])
-        snake_array.pop(0)
-        snake.forward(STEP)
-        for _ in range(10):     # delay the snake's speed
-            snake.forward(0)
-        # print(snake.position())
+        snake.update_snake()
+
 
 if __name__ == "__main__":
     main()
