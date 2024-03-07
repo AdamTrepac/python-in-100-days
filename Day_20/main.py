@@ -10,23 +10,23 @@ Snake game! There are 7 steps to the game:
 """
 from turtle import Turtle, Screen
 
-class Snake():
+class Snake(Turtle):
 
     def __init__(self, step) -> None:
-        self.snake = Turtle("mySquare")
+        super().__init__("mySquare")
         self.snake_array = []
-        self.snake.penup()
-        self.snake.color("green")
+        self.penup()
+        self.color("green")
         self.snake_heading = 0
         self.step = step
 
     def create_snake(self):
         """Draw the initial snake of 3 pieces long
         """
-        self.snake.speed(0)
+        self.speed(0)
         for _ in range(5):
-            self.snake.forward(self.step)
-            self.snake_array.append((self.snake.stamp(), self.snake.pos()))
+            self.forward(self.step)
+            self.snake_array.append((self.stamp(), self.pos()))
         print(self.snake_array)
 
     def update_snake(self):
@@ -34,12 +34,11 @@ class Snake():
         deletes the stamp at
         the oldest location in the array. 
         """
-        self.snake_heading = self.snake.heading()
-        self.snake.forward(self.step)
-        self.snake_array.append((self.snake.stamp(), self.snake.pos()))
-        self.snake.clearstamp(self.snake_array[0][0])
+        self.snake_heading = self.heading()
+        self.forward(self.step)
+        self.snake_array.append((self.stamp(), self.pos()))
+        self.clearstamp(self.snake_array[0][0])
         self.snake_array.pop(0)
-        print(self.snake_array)
         self.delay()
 
     def check_self_collision(self):
@@ -51,23 +50,23 @@ class Snake():
 
     def delay(self):
         for _ in range(10):     # delay the snake's speed
-            self.snake.forward(0)
+            self.forward(0)
 
     def move_up(self):
         if self.snake_heading != 270:
-            self.snake.setheading(90)
+            self.setheading(90)
 
     def move_down(self):
         if self.snake_heading != 90:
-            self.snake.setheading(270)
+            self.setheading(270)
 
     def move_left(self):
         if self.snake_heading != 0:
-            self.snake.setheading(180)
+            self.setheading(180)
 
     def move_right(self):
         if self.snake_heading != 180:
-            self.snake.setheading(0)
+            self.setheading(0)
 
     snake_up = move_up
     snake_down = move_down
@@ -75,10 +74,11 @@ class Snake():
     snake_right = move_right
 
 
-def check_wall_collision(snake: Snake, screen_width, screen_hight):
-    # if snake.position
-    pass
-    
+def check_wall_collision(snake: Snake, screen_width, screen_height):
+    # print(abs(snake.pos()))
+    if abs(snake.pos()[0]) > screen_width/2 or abs(snake.pos()[1]) > screen_height/2:
+        return True
+    return False
 
 def main():
     screen_width = 600
@@ -108,7 +108,8 @@ def main():
     screen.listen()
     while game_running:
         snake.update_snake()
-        if snake.check_self_collision() is True:
+        if (snake.check_self_collision() is True
+                or check_wall_collision(snake, screen_width, screen_height) is True):
             print("Collision!")
             game_running = False
 
