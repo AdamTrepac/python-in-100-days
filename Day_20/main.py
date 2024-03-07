@@ -7,7 +7,6 @@ Snake game! There are 7 steps to the game:
 5. Create a scoreboard
 6. Detect a collision with a wall
 7. Detect a collision with the tail
-
 """
 from turtle import Turtle, Screen
 
@@ -25,9 +24,9 @@ class Snake():
         """Draw the initial snake of 3 pieces long
         """
         self.snake.speed(0)
-        for _ in range(3):
-            self.snake_array.append(self.snake.stamp())
+        for _ in range(5):
             self.snake.forward(self.step)
+            self.snake_array.append((self.snake.stamp(), self.snake.pos()))
         print(self.snake_array)
 
     def update_snake(self):
@@ -37,9 +36,20 @@ class Snake():
         """
         self.snake_heading = self.snake.heading()
         self.snake.forward(self.step)
-        self.snake_array.append(self.snake.stamp())
-        self.snake.clearstamp(self.snake_array[0])
+        self.snake_array.append((self.snake.stamp(), self.snake.pos()))
+        self.snake.clearstamp(self.snake_array[0][0])
         self.snake_array.pop(0)
+        print(self.snake_array)
+        self.delay()
+
+    def check_self_collision(self):
+        snake_length = len(self.snake_array)
+        for i in range(snake_length-1):
+            if self.snake_array[i][1] == self.snake_array[snake_length-1][1]:
+                return True
+        return False
+
+    def delay(self):
         for _ in range(10):     # delay the snake's speed
             self.snake.forward(0)
 
@@ -65,21 +75,27 @@ class Snake():
     snake_right = move_right
 
 
+def check_wall_collision(snake: Snake, screen_width, screen_hight):
+    # if snake.position
+    pass
+    
+
 def main():
-    SCREEN_WIDTH = 600
-    SCREEN_HEIGHT = 600
-    STEP = 20
+    screen_width = 600
+    screen_height = 600
+    step = 20
+    game_running = True
 
     screen = Screen()
-    screen.setup(SCREEN_WIDTH, SCREEN_HEIGHT)
+    screen.setup(screen_width, screen_height)
     # screen.setworldcoordinates(0, SCREEN_HEIGHT, SCREEN_WIDTH, 0)
     screen.register_shape("mySquare",
-        ((STEP/2, STEP/2),
-        (-STEP/2, STEP/2),
-        (-STEP/2, -STEP/2),
-        (STEP/2, -STEP/2)))
+        ((step/2, step/2),
+        (-step/2, step/2),
+        (-step/2, -step/2),
+        (step/2, -step/2)))
 
-    snake = Snake(STEP)
+    snake = Snake(step)
     snake.create_snake()
 
     # screen.exitonclick()
@@ -90,8 +106,11 @@ def main():
 
     # Moving the snake
     screen.listen()
-    while True:
+    while game_running:
         snake.update_snake()
+        if snake.check_self_collision() is True:
+            print("Collision!")
+            game_running = False
 
 
 if __name__ == "__main__":
