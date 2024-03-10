@@ -8,7 +8,7 @@ Snake game! There are 7 steps to the game:
 6. Detect a collision with a wall
 7. Detect a collision with the tail
 """
-from turtle import Turtle, Screen, Vec2D, width
+from turtle import Turtle, Screen, Vec2D
 from random import randint
 
 class Snake(Turtle):
@@ -109,16 +109,19 @@ class Food(Turtle):
 
 
 def check_wall_collision(snake: Snake, screen_width, screen_height):
-    # print(abs(snake.pos()))
     if abs(snake.pos()[0]) > screen_width/2 or abs(snake.pos()[1]) > screen_height/2:
         return True
     return False
 
 def check_food_collision(snake: Snake, food: Food, screen_width, screen_height):
-    print(snake.pos(), food.pos(), snake.pos() == food.pos())
-    if snake.pos() == food.pos():
+    if equal_vectors(snake.pos(), food.pos()):
         snake.eat_food()
         food.spawn_food(snake, screen_width, screen_height)
+
+def equal_vectors(vec1: Vec2D, vec2: Vec2D):
+    if round(vec1[0]) == round(vec2[0]) and round(vec1[1]) == round(vec2[1]):
+        return True
+    return False
 
 
 def main():
@@ -129,7 +132,7 @@ def main():
 
     screen = Screen()
     screen.setup(screen_width, screen_height)
-    # screen.setworldcoordinates(0, SCREEN_HEIGHT, SCREEN_WIDTH, 0)
+    screen.bgcolor("black")
     screen.register_shape("mySquare",
         ((step/2, step/2),
         (-step/2, step/2),
