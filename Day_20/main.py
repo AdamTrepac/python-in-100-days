@@ -8,7 +8,6 @@ Snake game! There are 7 steps to the game:
 6. Detect a collision with a wall
 7. Detect a collision with the tail
 """
-from itertools import count
 from turtle import Turtle, Screen, Vec2D
 from random import randint
 
@@ -26,7 +25,7 @@ class Snake(Turtle):
     def create_snake(self):
         """Draw the initial snake of 3 pieces long
         """
-        for _ in range(9):
+        for _ in range(3):
             self.forward(self.step)
             self.snake_array.append((self.stamp(), self.pos()))
 
@@ -55,7 +54,8 @@ class Snake(Turtle):
     def check_self_collision(self):
         snake_length = len(self.snake_array)
         for i in range(snake_length-1):
-            if self.snake_array[i][1] == self.snake_array[snake_length-1][1]:
+            if self.distance(self.snake_array[i][1]) < self.step/2:
+                # print("self collision")
                 return True
         return False
 
@@ -132,6 +132,7 @@ class Score(Turtle):
 
 def check_wall_collision(snake: Snake, screen_width, screen_height):
     if abs(snake.pos()[0]) > screen_width/2 or abs(snake.pos()[1]) > screen_height/2:
+        # print("wall collision")
         return True
     return False
 
