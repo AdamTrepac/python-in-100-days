@@ -8,6 +8,7 @@ Snake game! There are 7 steps to the game:
 6. Detect a collision with a wall
 7. Detect a collision with the tail
 """
+from itertools import count
 from turtle import Turtle, Screen, Vec2D
 from random import randint
 
@@ -25,10 +26,9 @@ class Snake(Turtle):
     def create_snake(self):
         """Draw the initial snake of 3 pieces long
         """
-        for _ in range(5):
+        for _ in range(9):
             self.forward(self.step)
             self.snake_array.append((self.stamp(), self.pos()))
-        print(self.snake_array)
 
     def update_snake(self):
         """Move the snake forward, stamp at the new location, and 
@@ -108,14 +108,37 @@ class Food(Turtle):
         return food_pos
 
 
+class Score(Turtle):
+    """Create a turtle object that displays and updates the users score
+    """
+    def __init__(self, screen_width, screen_height, step) -> None:
+        super().__init__("square")
+        self.penup()
+        self.color("White")
+        self.hideturtle()
+        self.speed(0)
+        self.goto(screen_width/2 - 10, screen_height/2 - step)
+        self.score_count = -1
+
+    def increment_score(self):
+        self.clear()
+        self.score_count += 1
+        score_string = "Score: " + str(self.score_count)
+        self.write(score_string, move = False, align="right", font=('Arial', 10, "bold"))
+
+    def get_score(self):
+        return self.score_count
+
+
 def check_wall_collision(snake: Snake, screen_width, screen_height):
     if abs(snake.pos()[0]) > screen_width/2 or abs(snake.pos()[1]) > screen_height/2:
         return True
     return False
 
-def check_food_collision(snake: Snake, food: Food, screen_width, screen_height):
+def check_food_collision(snake: Snake, food: Food, score: Score, screen_width, screen_height):
     if equal_vectors(snake.pos(), food.pos()):
         snake.eat_food()
+        score.increment_score()
         food.spawn_food(snake, screen_width, screen_height)
 
 def equal_vectors(vec1: Vec2D, vec2: Vec2D):
@@ -145,7 +168,9 @@ def main():
     food = Food(step)
     food.color("Red")
 
-    # screen.exitonclick()
+    score = Score(screen_width, screen_height, step)
+    score.increment_score()
+
     screen.onkeypress(fun = snake.snake_up, key = "Up")
     screen.onkeypress(fun = snake.snake_down, key = "Down")
     screen.onkeypress(fun = snake.snake_left, key = "Left")
@@ -156,10 +181,11 @@ def main():
     food.spawn_food(snake, screen_width, screen_height)
     while game_running:
         snake.update_snake()
-        check_food_collision(snake, food, screen_width, screen_height)
+        print(snake.snake_array)
+        check_food_collision(snake, food, score, screen_width, screen_height)
         if (snake.check_self_collision() is True
                 or check_wall_collision(snake, screen_width, screen_height) is True):
-            print("Collision!")
+            print("Game over! Your score was: ", score.get_score())
             game_running = False
 
 
