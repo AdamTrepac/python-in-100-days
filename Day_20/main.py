@@ -42,20 +42,14 @@ class Snake(Turtle):
         self.delay()
 
     def eat_food(self):
-        """Move the snake forward, stamp at the new location, and 
-        deletes the stamp at
-        the oldest location in the array. 
-        """
         self.snake_heading = self.heading()
         self.forward(self.step)
         self.snake_array.append((self.stamp(), self.pos()))
         self.delay()
 
     def check_self_collision(self):
-        snake_length = len(self.snake_array)
-        for i in range(snake_length-1):
-            if self.distance(self.snake_array[i][1]) < self.step/2:
-                # print("self collision")
+        for snake_seg in self.snake_array[0:-1]:
+            if self.distance(snake_seg[1]) < self.step/2:
                 return True
         return False
 
@@ -182,7 +176,6 @@ def main():
     food.spawn_food(snake, screen_width, screen_height)
     while game_running:
         snake.update_snake()
-        print(snake.snake_array)
         check_food_collision(snake, food, score, screen_width, screen_height)
         if (snake.check_self_collision() is True
                 or check_wall_collision(snake, screen_width, screen_height) is True):
