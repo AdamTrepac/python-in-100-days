@@ -1,6 +1,27 @@
 from turtle import Turtle, Screen
 
 
+class Paddle(Turtle):
+
+    def __init__(self, screen_width, screen_height, start_x) -> None:
+        super().__init__("paddle")
+        self.penup()
+        self.color("white")
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+        self.goto(start_x, screen_height/2)
+
+    def move_up(self):
+        self.heading(90)
+        self.forward(10)
+
+    def move_down(self):
+        self.heading(270)
+        self.forward(10)
+
+    def detect_collision(self):
+        pass
+
 def draw_background(screen_width, screen_height):
     cursor = Turtle("square")
     cursor.color("#bababa") # set color to a light grey 
@@ -36,9 +57,25 @@ def main():
     buffer = 5
     screen.setworldcoordinates(buffer, screen.window_height()+buffer, screen.window_width()+buffer, buffer)
     screen.bgcolor("black")
-    screen.register_shape("my_square", ((0,0),(0,5),(5,5),(5,0)))
+    paddle_width = 10
+    paddle_height = screen_height/12
+    # screen.register_shape("paddle",
+    #     ((paddle_width/2, paddle_height/2),
+    #     (paddle_width/2, -paddle_height/2),
+    #     (-paddle_width/2, -paddle_height/2),
+    #     (-paddle_width/2, paddle_height/2)))
+
+    screen.register_shape("paddle",
+        ((paddle_height/2, paddle_width/2),
+        (paddle_height/2, -paddle_width/2),
+        (-paddle_height/2, -paddle_width/2),
+        (-paddle_height/2, paddle_width/2)))
+
 
     draw_background(screen_width, screen_height)
+
+    left_paddle = Paddle(screen_width, screen_height, 30)
+    right_paddle = Paddle(screen_width, screen_height, screen_width-30)
     
     screen.exitonclick()
 
