@@ -7,20 +7,21 @@ class Paddle(Turtle):
         super().__init__("paddle")
         self.penup()
         self.color("white")
+        self.setheading(270)
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.speed(10)
         self.goto(start_x, screen_height/2)
 
     def move_up(self):
-        self.heading(90)
-        self.forward(10)
+        self.forward(20)
 
     def move_down(self):
-        self.heading(270)
-        self.forward(10)
+        self.back(20)
 
     def detect_collision(self):
         pass
+
 
 def draw_background(screen_width, screen_height):
     cursor = Turtle("square")
@@ -59,24 +60,23 @@ def main():
     screen.bgcolor("black")
     paddle_width = 10
     paddle_height = screen_height/12
-    # screen.register_shape("paddle",
-    #     ((paddle_width/2, paddle_height/2),
-    #     (paddle_width/2, -paddle_height/2),
-    #     (-paddle_width/2, -paddle_height/2),
-    #     (-paddle_width/2, paddle_height/2)))
 
     screen.register_shape("paddle",
-        ((paddle_height/2, paddle_width/2),
-        (paddle_height/2, -paddle_width/2),
-        (-paddle_height/2, -paddle_width/2),
-        (-paddle_height/2, paddle_width/2)))
-
+        ((paddle_width/2, paddle_height/2),
+        (paddle_width/2, -paddle_height/2),
+        (-paddle_width/2, -paddle_height/2),
+        (-paddle_width/2, paddle_height/2)))
 
     draw_background(screen_width, screen_height)
 
     left_paddle = Paddle(screen_width, screen_height, 30)
     right_paddle = Paddle(screen_width, screen_height, screen_width-30)
-    
+
+    screen.listen()
+    screen.onkeypress(left_paddle.move_up, "w")
+    screen.onkeypress(left_paddle.move_down, "s")
+    screen.onkeypress(right_paddle.move_up,"Up")
+    screen.onkeypress(right_paddle.move_down,"Down")
     screen.exitonclick()
 
 if __name__ == "__main__":
