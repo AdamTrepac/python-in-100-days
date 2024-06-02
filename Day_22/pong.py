@@ -3,21 +3,25 @@ from turtle import Turtle, Screen
 
 class Paddle(Turtle):
 
-    def __init__(self, screen_width, screen_height, start_x) -> None:
+    def __init__(self, screen_width, screen_height, paddle_width, paddle_height, start_x) -> None:
         super().__init__("paddle")
         self.penup()
         self.color("white")
         self.setheading(270)
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.paddle_width = paddle_width
+        self.paddle_height = paddle_height
         self.speed(10)
         self.goto(start_x, screen_height/2)
 
     def move_up(self):
-        self.forward(20)
+        if self.ycor() > self.paddle_height:
+            self.forward(20)
 
     def move_down(self):
-        self.back(20)
+        if self.ycor() < self.screen_height - self.paddle_height:
+            self.back(20)
 
     def detect_collision(self):
         pass
@@ -69,8 +73,8 @@ def main():
 
     draw_background(screen_width, screen_height)
 
-    left_paddle = Paddle(screen_width, screen_height, 30)
-    right_paddle = Paddle(screen_width, screen_height, screen_width-30)
+    left_paddle = Paddle(screen_width, screen_height, paddle_width, paddle_height, 30)
+    right_paddle = Paddle(screen_width, screen_height, paddle_width, paddle_height, screen_width-30)
 
     screen.listen()
     screen.onkeypress(left_paddle.move_up, "w")
