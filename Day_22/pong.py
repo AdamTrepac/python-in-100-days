@@ -33,18 +33,28 @@ class Ball(Turtle):
         super().__init__("ball")
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.x_vel = 0
+        self.y_vel = 0
         self.penup()
         self.color("white")
         self.speed(10)
-        self.reset()
+        self.reset_ball()
     
-    def reset(self):
+    def reset_ball(self):
         """Resets the ball to the starting position, sets the velocity to zero"""
-        print("I have reset")
+        self.x_vel = 0
+        self.y_vel = 0
+        self.hideturtle()
+        self.goto(self.screen_width/2,self.screen_height/2)
+        self.showturtle()
         pass
 
     def update_velocity(self):
         """Updates the velocity of the ball. useful for col  """
+        self.x_vel = 1
+        self.y_vel = 1
+        self.setx(self.xcor()+self.x_vel)
+        self.sety(self.ycor()+self.y_vel)
         pass
 
 
@@ -104,12 +114,18 @@ def main():
     left_paddle = Paddle(screen_width, screen_height, paddle_width, paddle_height, 30)
     right_paddle = Paddle(screen_width, screen_height, paddle_width, paddle_height, screen_width-30)
     ball = Ball(screen_width, screen_height)
+    game = True
 
     screen.listen()
     screen.onkeypress(left_paddle.move_up, "w")
     screen.onkeypress(left_paddle.move_down, "s")
     screen.onkeypress(right_paddle.move_up,"Up")
     screen.onkeypress(right_paddle.move_down,"Down")
+
+
+    while(game):
+        ball.update_velocity()
+    
     screen.exitonclick()
 
 if __name__ == "__main__":
