@@ -5,13 +5,13 @@ class Paddle(Turtle):
 
     def __init__(self, screen_width, screen_height, paddle_width, paddle_height, start_x) -> None:
         super().__init__("paddle")
-        self.penup()
-        self.color("white")
-        self.setheading(270)
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.paddle_width = paddle_width
         self.paddle_height = paddle_height
+        self.penup()
+        self.color("white")
+        self.setheading(270)
         self.speed(10)
         self.goto(start_x, screen_height/2)
 
@@ -24,6 +24,27 @@ class Paddle(Turtle):
             self.back(20)
 
     def detect_collision(self):
+        pass
+
+
+class Ball(Turtle):
+    
+    def __init__(self, screen_width, screen_height):
+        super().__init__("ball")
+        self.screen_width = screen_width
+        self.screen_height = screen_height
+        self.penup()
+        self.color("white")
+        self.speed(10)
+        self.reset()
+    
+    def reset(self):
+        """Resets the ball to the starting position, sets the velocity to zero"""
+        print("I have reset")
+        pass
+
+    def update_velocity(self):
+        """Updates the velocity of the ball. useful for col  """
         pass
 
 
@@ -64,6 +85,7 @@ def main():
     screen.bgcolor("black")
     paddle_width = 10
     paddle_height = screen_height/12
+    ball_size = 10
 
     screen.register_shape("paddle",
         ((paddle_width/2, paddle_height/2),
@@ -71,10 +93,17 @@ def main():
         (-paddle_width/2, -paddle_height/2),
         (-paddle_width/2, paddle_height/2)))
 
+    screen.register_shape("ball",
+        ((ball_size/2, ball_size/2),
+        (ball_size/2, -ball_size/2),
+        (-ball_size/2, -ball_size/2),
+        (-ball_size/2, ball_size/2)))
+
     draw_background(screen_width, screen_height)
 
     left_paddle = Paddle(screen_width, screen_height, paddle_width, paddle_height, 30)
     right_paddle = Paddle(screen_width, screen_height, paddle_width, paddle_height, screen_width-30)
+    ball = Ball(screen_width, screen_height)
 
     screen.listen()
     screen.onkeypress(left_paddle.move_up, "w")
