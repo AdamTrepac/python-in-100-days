@@ -42,12 +42,15 @@ class Ball(Turtle):
         self.goto(x_pos,y_pos)
         self.showturtle()
 
-    def update_velocity(self):
-        """Updates the velocity of the ball"""
-        self.x_vel = 1
-        self.y_vel = 1
+    def update_position(self):
+        """Updates the position of the ball"""
         self.setx(self.xcor()+self.x_vel)
         self.sety(self.ycor()+self.y_vel)
+
+    def set_velocity(self, x_vel, y_vel):
+        """set the velocity of the ball"""
+        self.x_vel = x_vel
+        self.y_vel = y_vel
 
 class Game:
 
@@ -120,12 +123,20 @@ class Game:
         self.screen.onkeypress(right_paddle.move_down,"Down")
 
         game_running = True
+        ball.set_velocity(1, 5)
 
         while(game_running):
-            ball.update_velocity()
+            ball.update_position()
+            self.check_ball_collision(ball)
+            print(ball.pos())
 
         self.screen.exitonclick()
 
+    def check_ball_collision(self, ball: Ball):
+        if ball.ycor() <= 0:
+            ball.y_vel = -ball.y_vel
+        if ball.ycor() >= self.screen_height:
+            ball.y_vel = -ball.y_vel
 
 
 def main():
