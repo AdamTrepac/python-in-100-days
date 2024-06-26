@@ -1,3 +1,4 @@
+from ast import AsyncFunctionDef
 from turtle import Turtle, Screen
 
 
@@ -6,8 +7,8 @@ class Paddle(Turtle):
     def __init__(self, screen_height, paddle_width, paddle_height, start_x) -> None:
         super().__init__("paddle")
         self.screen_height = screen_height
-        self.paddle_width = paddle_width
-        self.paddle_height = paddle_height
+        self.width = paddle_width
+        self.height = paddle_height
         self.penup()
         self.color("white")
         self.setheading(270)
@@ -15,11 +16,11 @@ class Paddle(Turtle):
         self.goto(start_x, screen_height/2)
 
     def move_up(self):
-        if self.ycor() > self.paddle_height:
+        if self.ycor() > self.height/2:
             self.forward(20)
 
     def move_down(self):
-        if self.ycor() < self.screen_height - self.paddle_height:
+        if self.ycor() < self.screen_height - self.height/2:
             self.back(20)
 
     def detect_collision(self):
@@ -123,20 +124,27 @@ class Game:
         self.screen.onkeypress(right_paddle.move_down,"Down")
 
         game_running = True
-        ball.set_velocity(1, 5)
+        ball.set_velocity(8, 3)
 
         while(game_running):
             ball.update_position()
-            self.check_ball_collision(ball)
-            print(ball.pos())
+            self.check_wall_collision(ball)
+            self.check_paddle_collision(ball, left_paddle)
+            self.check_paddle_collision(ball, right_paddle)
 
         self.screen.exitonclick()
 
-    def check_ball_collision(self, ball: Ball):
+    def check_wall_collision(self, ball: Ball):
         if ball.ycor() <= 0:
             ball.y_vel = -ball.y_vel
         if ball.ycor() >= self.screen_height:
             ball.y_vel = -ball.y_vel
+
+    def check_paddle_collision(self, ball: Ball, paddle: Paddle):
+        if (ball.ycor() < paddle.ycor() + paddle.height/2 
+                and ball.ycor() > paddle.ycor() - paddle.height/2
+                and ball.xcor() == paddle.xcor()):
+            ball.x_vel = -ball.x_vel
 
 
 def main():
