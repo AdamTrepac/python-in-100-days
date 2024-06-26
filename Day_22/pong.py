@@ -3,9 +3,8 @@ from turtle import Turtle, Screen
 
 class Paddle(Turtle):
 
-    def __init__(self, screen_width, screen_height, paddle_width, paddle_height, start_x) -> None:
+    def __init__(self, screen_height, paddle_width, paddle_height, start_x) -> None:
         super().__init__("paddle")
-        self.screen_width = screen_width
         self.screen_height = screen_height
         self.paddle_width = paddle_width
         self.paddle_height = paddle_height
@@ -29,23 +28,18 @@ class Paddle(Turtle):
 
 class Ball(Turtle):
     
-    def __init__(self, screen_width, screen_height):
+    def __init__(self):
         super().__init__("ball")
-        self.screen_width = screen_width
-        self.screen_height = screen_height
         self.x_vel = 0
         self.y_vel = 0
         self.penup()
         self.color("white")
         self.speed(10)
-        self.reset_ball()
     
-    def reset_ball(self):
-        """Resets the ball to the starting position, sets the velocity to zero"""
-        self.x_vel = 0
-        self.y_vel = 0
+    def set_position(self, x_pos, y_pos):
+        """Sets the ball position"""
         self.hideturtle()
-        self.goto(self.screen_width/2,self.screen_height/2)
+        self.goto(x_pos,y_pos)
         self.showturtle()
 
     def update_velocity(self):
@@ -110,36 +104,28 @@ class Game:
             else:
                 cursor.pendown()
             cursor.forward(self.screen_height/dash_size)
-                
 
-    
+    def run_game(self):
         
+        left_paddle = Paddle(self.screen_height, self.paddle_width, self.paddle_height, 30)
+        right_paddle = Paddle(self.screen_height, self.paddle_width, self.paddle_height, self.screen_width-30)
+        ball = Ball()
 
+        ball.set_position(self.screen_width/2,self.screen_height/2)
 
-def draw_background(screen_width, screen_height):
-    cursor = Turtle("square")
-    cursor.color("#bababa") # set color to a light grey 
-    cursor.speed(9)
-    cursor.hideturtle()
-    cursor.pendown()
-    cursor.pensize(5)
-    
-    cursor.goto(screen_width, 0)
-    cursor.goto(screen_width, screen_height)
-    cursor.goto(0, screen_height)
-    cursor.goto(0, 0)
+        self.screen.listen()
+        self.screen.onkeypress(left_paddle.move_up, "w")
+        self.screen.onkeypress(left_paddle.move_down, "s")
+        self.screen.onkeypress(right_paddle.move_up,"Up")
+        self.screen.onkeypress(right_paddle.move_down,"Down")
 
-    cursor.goto(screen_width/2, 0)
-    dash_size = 20
-    cursor.setheading(90)
-    cursor.penup()
-    cursor.forward(screen_height/dash_size/2)
-    for i in range(dash_size):
-        if i % 2 == 1:
-            cursor.penup()
-        else:
-            cursor.pendown()
-        cursor.forward(screen_height/dash_size)
+        game_running = True
+
+        while(game_running):
+            ball.update_velocity()
+
+        self.screen.exitonclick()
+
 
 
 def main():
@@ -149,23 +135,7 @@ def main():
     ball_size = 10
 
     game = Game(screen_width, screen_height, ball_size, paddle_width)
-
-    # left_paddle = Paddle(screen_width, screen_height, paddle_width, paddle_height, 30)
-    # right_paddle = Paddle(screen_width, screen_height, paddle_width, paddle_height, screen_width-30)
-    # ball = Ball(screen_width, screen_height)
-    # game = True
-
-    # screen.listen()
-    # screen.onkeypress(left_paddle.move_up, "w")
-    # screen.onkeypress(left_paddle.move_down, "s")
-    # screen.onkeypress(right_paddle.move_up,"Up")
-    # screen.onkeypress(right_paddle.move_down,"Down")
-
-
-    # while(game):
-    #     ball.update_velocity()
-    
-    # screen.exitonclick()
+    game.run_game()
 
 if __name__ == "__main__":
     main()
