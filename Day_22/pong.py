@@ -1,5 +1,6 @@
 from ast import AsyncFunctionDef
 from turtle import Turtle, Screen
+from time import sleep
 
 
 class Paddle(Turtle):
@@ -9,7 +10,7 @@ class Paddle(Turtle):
         self.position_limit = position_limit
         self.width = paddle_width
         self.height = paddle_height
-        self.paddle_speed = 20
+        self.paddle_speed = 10
         self.y_vel = 0
         self.penup()
         self.color("white")
@@ -59,6 +60,7 @@ class Ball(Turtle):
         self.x_vel = x_vel
         self.y_vel = y_vel
 
+
 class Game:
 
     def __init__(self, screen_width, screen_height, ball_size, paddle_width) -> None:
@@ -66,7 +68,7 @@ class Game:
         self.screen_height = screen_height
         self.ball_size = ball_size
         self.paddle_width = paddle_width
-        self.paddle_height = screen_height/12
+        self.paddle_height = screen_height/10
         self.screen = Screen()
         self.setup_screen()
 
@@ -134,8 +136,9 @@ class Game:
         self.screen.onkey(right_paddle.stop_moving, "Down")
 
         game_running = True
-        ball.set_velocity(8, 3)
+        ball.set_velocity(3, 1)
 
+        self.screen.tracer(0)
         while(game_running):
             ball.update_position()
             left_paddle.update_position()
@@ -143,6 +146,8 @@ class Game:
             self.check_wall_collision(ball)
             self.check_paddle_collision(ball, left_paddle)
             self.check_paddle_collision(ball, right_paddle)
+            self.screen.update()
+            sleep(0.01)
 
         self.screen.exitonclick()
 
