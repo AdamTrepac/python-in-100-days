@@ -4,27 +4,33 @@ from turtle import Turtle, Screen
 
 class Paddle(Turtle):
 
-    def __init__(self, screen_height, paddle_width, paddle_height, start_x) -> None:
+    def __init__(self, position_limit, paddle_width, paddle_height, start_x) -> None:
         super().__init__("paddle")
-        self.screen_height = screen_height
+        self.position_limit = position_limit
         self.width = paddle_width
         self.height = paddle_height
+        self.paddle_speed = 20
+        self.y_vel = 0
         self.penup()
         self.color("white")
         self.setheading(270)
         self.speed(10)
-        self.goto(start_x, screen_height/2)
+        self.goto(start_x, position_limit/2)
 
     def move_up(self):
-        if self.ycor() > self.height/2:
-            self.forward(20)
+        self.y_vel = -self.paddle_speed
 
     def move_down(self):
-        if self.ycor() < self.screen_height - self.height/2:
-            self.back(20)
+        self.y_vel = self.paddle_speed
 
-    def detect_collision(self):
-        pass
+    def stop_moving(self):
+        self.y_vel = 0
+
+    def update_position(self):
+        if self.ycor() < self.position_limit - self.height/2 and self.y_vel > 0:
+            self.sety(self.ycor()+self.y_vel)
+        if self.ycor() > self.height/2 and self.y_vel < 0:
+            self.sety(self.ycor()+self.y_vel)
 
 
 class Ball(Turtle):
@@ -119,15 +125,21 @@ class Game:
 
         self.screen.listen()
         self.screen.onkeypress(left_paddle.move_up, "w")
+        self.screen.onkey(left_paddle.stop_moving, "w")
         self.screen.onkeypress(left_paddle.move_down, "s")
+        self.screen.onkey(left_paddle.stop_moving, "s")
         self.screen.onkeypress(right_paddle.move_up,"Up")
+        self.screen.onkey(right_paddle.stop_moving, "Up")
         self.screen.onkeypress(right_paddle.move_down,"Down")
+        self.screen.onkey(right_paddle.stop_moving, "Down")
 
         game_running = True
         ball.set_velocity(8, 3)
 
         while(game_running):
             ball.update_position()
+            left_paddle.update_position()
+            right_paddle.update_position()
             self.check_wall_collision(ball)
             self.check_paddle_collision(ball, left_paddle)
             self.check_paddle_collision(ball, right_paddle)
@@ -144,7 +156,7 @@ class Game:
         if (ball.ycor() < paddle.ycor() + paddle.height/2 
                 and ball.ycor() > paddle.ycor() - paddle.height/2
                 and ball.xcor() == paddle.xcor()):
-            ball.x_vel = -ball.x_vel
+            ball.x_vel == -ball.x_vel
 
 
 def main():
