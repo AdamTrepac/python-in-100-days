@@ -1,4 +1,3 @@
-from ast import AsyncFunctionDef
 from turtle import Turtle, Screen
 from time import sleep
 
@@ -55,8 +54,12 @@ class Ball(Turtle):
         self.setx(self.xcor()+self.x_vel)
         self.sety(self.ycor()+self.y_vel)
 
-    def set_velocity(self, x_vel, y_vel):
+    def set_velocity(self, x_vel=None, y_vel=None):
         """set the velocity of the ball"""
+        if x_vel == None:
+            x_vel = self.x_vel
+        if y_vel == None:
+            y_vel = self.y_vel
         self.x_vel = x_vel
         self.y_vel = y_vel
 
@@ -123,8 +126,6 @@ class Game:
         right_paddle = Paddle(self.screen_height, self.paddle_width, self.paddle_height, self.screen_width-30)
         ball = Ball()
 
-        ball.set_position(self.screen_width/2,self.screen_height/2)
-
         self.screen.listen()
         self.screen.onkeypress(left_paddle.move_up, "w")
         self.screen.onkey(left_paddle.stop_moving, "w")
@@ -135,9 +136,10 @@ class Game:
         self.screen.onkeypress(right_paddle.move_down,"Down")
         self.screen.onkey(right_paddle.stop_moving, "Down")
 
-        game_running = True
-        ball.set_velocity(3, 1)
+        ball.set_position(self.screen_width/2,self.screen_height/2)
+        ball.set_velocity(10, 1)
 
+        game_running = True
         self.screen.tracer(0)
         while(game_running):
             ball.update_position()
@@ -158,11 +160,12 @@ class Game:
             ball.y_vel = -ball.y_vel
 
     def check_paddle_collision(self, ball: Ball, paddle: Paddle):
-        if (ball.ycor() < paddle.ycor() + paddle.height/2 
+        if (ball.ycor() < paddle.ycor() + paddle.height/2
                 and ball.ycor() > paddle.ycor() - paddle.height/2
-                and ball.xcor() == paddle.xcor()):
-            ball.x_vel == -ball.x_vel
-
+                and ball.xcor() >= paddle.xcor() - paddle.width/2
+                and ball.xcor() <= paddle.xcor() + paddle.width/2):
+            ball.x_vel = -ball.x_vel
+        
 
 def main():
     screen_width = 1000
