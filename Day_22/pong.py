@@ -40,6 +40,7 @@ class Ball(Turtle):
         super().__init__("ball")
         self.x_vel = 0
         self.y_vel = 0
+        self.magnitude = 0
         self.penup()
         self.color("white")
         self.speed(10)
@@ -55,6 +56,8 @@ class Ball(Turtle):
         self.setx(self.xcor()+self.x_vel)
         self.sety(self.ycor()+self.y_vel)
 
+        print(self.x_vel, self.y_vel) # debug!
+
     def set_velocity(self, x_vel=None, y_vel=None):
         """set the velocity of the ball"""
         if x_vel == None:
@@ -63,6 +66,7 @@ class Ball(Turtle):
             y_vel = self.y_vel
         self.x_vel = x_vel
         self.y_vel = y_vel
+        self.magnitude = math.sqrt(x_vel**2 + y_vel**2)
 
 
 class Game:
@@ -138,7 +142,7 @@ class Game:
         self.screen.onkey(right_paddle.stop_moving, "Down")
 
         ball.set_position(self.screen_width/2,self.screen_height/2)
-        ball.set_velocity(-10, 1)
+        ball.set_velocity(10, 1)
 
         game_running = True
         self.screen.tracer(0)
@@ -165,13 +169,16 @@ class Game:
                 and ball.ycor() > paddle.ycor() - paddle.height/2
                 and ball.xcor() >= paddle.xcor() - paddle.width/2
                 and ball.xcor() <= paddle.xcor() + paddle.width/2):
-            ball.x_vel = -ball.x_vel
 
+            print("COLLISION!")
             # code for ball angle calculations
-            angle = 45
-            ball.x_vel = ball.x_vel*math.cos(math.radians(angle))
-            ball.y_vel = ball.x_vel*math.sin(math.radians(angle))
+            ball.magnitude *= -1
 
+            angle = 45
+            ball.x_vel = ball.magnitude*math.cos(math.radians(angle))
+            ball.y_vel = ball.magnitude*math.sin(math.radians(angle))
+
+            # ball.x_vel = -ball.x_vel
 
 def main():
     screen_width = 1000
