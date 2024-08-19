@@ -56,8 +56,6 @@ class Ball(Turtle):
         self.setx(self.xcor()+self.x_vel)
         self.sety(self.ycor()+self.y_vel)
 
-        print(self.x_vel, self.y_vel) # debug!
-
     def set_velocity(self, x_vel=None, y_vel=None):
         """set the velocity of the ball"""
         if x_vel == None:
@@ -154,7 +152,7 @@ class Game:
             self.check_paddle_collision(ball, left_paddle)
             self.check_paddle_collision(ball, right_paddle)
             self.screen.update()
-            sleep(0.03)
+            sleep(0.02)
 
         self.screen.exitonclick()
 
@@ -174,11 +172,12 @@ class Game:
             # code for ball angle calculations
             ball.magnitude *= -1
 
-            angle = 45
+            ball_impact_y = ball.ycor() - paddle.ycor()
+            angle = ball_impact_y/paddle.height*2 * 90   # compute ball angle passed on distance from paddle 
+            
             ball.x_vel = ball.magnitude*math.cos(math.radians(angle))
-            ball.y_vel = ball.magnitude*math.sin(math.radians(angle))
-
-            # ball.x_vel = -ball.x_vel
+            ball.y_vel = abs(ball.magnitude)*math.sin(math.radians(angle))
+            print(ball.x_vel, ball.y_vel, ball_impact_y, angle)
 
 def main():
     screen_width = 1000
