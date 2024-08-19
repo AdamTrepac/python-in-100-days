@@ -1,3 +1,4 @@
+import math
 from turtle import Turtle, Screen
 from time import sleep
 
@@ -39,6 +40,7 @@ class Ball(Turtle):
         super().__init__("ball")
         self.x_vel = 0
         self.y_vel = 0
+        self.magnitude = 0
         self.penup()
         self.color("white")
         self.speed(10)
@@ -62,6 +64,7 @@ class Ball(Turtle):
             y_vel = self.y_vel
         self.x_vel = x_vel
         self.y_vel = y_vel
+        self.magnitude = math.sqrt(x_vel**2 + y_vel**2)
 
 class Score:
 
@@ -163,7 +166,7 @@ class Game:
             self.check_paddle_collision(ball, left_paddle)
             self.check_paddle_collision(ball, right_paddle)
             self.screen.update()
-            sleep(0.01)
+            sleep(0.02)
 
         self.screen.exitonclick()
 
@@ -178,8 +181,17 @@ class Game:
                 and ball.ycor() > paddle.ycor() - paddle.height/2
                 and ball.xcor() >= paddle.xcor() - paddle.width/2
                 and ball.xcor() <= paddle.xcor() + paddle.width/2):
-            ball.x_vel = -ball.x_vel
-        
+
+            print("COLLISION!")
+            # code for ball angle calculations
+            ball.magnitude *= -1
+
+            ball_impact_y = ball.ycor() - paddle.ycor()
+            angle = ball_impact_y/paddle.height*2 * 90   # compute ball angle passed on distance from paddle 
+            
+            ball.x_vel = ball.magnitude*math.cos(math.radians(angle))
+            ball.y_vel = abs(ball.magnitude)*math.sin(math.radians(angle))
+            print(ball.x_vel, ball.y_vel, ball_impact_y, angle)
 
 def main():
     screen_width = 1000
