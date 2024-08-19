@@ -63,6 +63,20 @@ class Ball(Turtle):
         self.x_vel = x_vel
         self.y_vel = y_vel
 
+class Score:
+
+    def __init__(self) -> None:
+        self.score = 0
+
+    def increment_score(self):
+        self.score += 1
+
+    def reset_score(self):
+        self.score = 0
+
+    def draw_score(self):
+        pass
+
 
 class Game:
 
