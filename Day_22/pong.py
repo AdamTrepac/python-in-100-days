@@ -1,3 +1,4 @@
+import math
 from turtle import Turtle, Screen
 from time import sleep
 
@@ -137,7 +138,7 @@ class Game:
         self.screen.onkey(right_paddle.stop_moving, "Down")
 
         ball.set_position(self.screen_width/2,self.screen_height/2)
-        ball.set_velocity(10, 1)
+        ball.set_velocity(-10, 1)
 
         game_running = True
         self.screen.tracer(0)
@@ -149,7 +150,7 @@ class Game:
             self.check_paddle_collision(ball, left_paddle)
             self.check_paddle_collision(ball, right_paddle)
             self.screen.update()
-            sleep(0.01)
+            sleep(0.03)
 
         self.screen.exitonclick()
 
@@ -165,7 +166,12 @@ class Game:
                 and ball.xcor() >= paddle.xcor() - paddle.width/2
                 and ball.xcor() <= paddle.xcor() + paddle.width/2):
             ball.x_vel = -ball.x_vel
-        
+
+            # code for ball angle calculations
+            angle = 45
+            ball.x_vel = ball.x_vel*math.cos(math.radians(angle))
+            ball.y_vel = ball.x_vel*math.sin(math.radians(angle))
+
 
 def main():
     screen_width = 1000
