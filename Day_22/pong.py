@@ -142,6 +142,8 @@ class Game:
         left_paddle = Paddle(self.screen_height, self.paddle_width, self.paddle_height, 30)
         right_paddle = Paddle(self.screen_height, self.paddle_width, self.paddle_height, self.screen_width-30)
         ball = Ball()
+        left_score = Score()
+        right_score = Score()
 
         self.screen.listen()
         self.screen.onkeypress(left_paddle.move_up, "w")
@@ -165,10 +167,18 @@ class Game:
             self.check_wall_collision(ball)
             self.check_paddle_collision(ball, left_paddle)
             self.check_paddle_collision(ball, right_paddle)
+            self.check_out_of_bounds(ball, left_score, right_score)
             self.screen.update()
             sleep(0.02)
 
         self.screen.exitonclick()
+
+    def reset_ball(self, ball: Ball):
+        sleep(1)
+        ball.set_position(self.screen_width/2, self.screen_height/2)
+        self.screen.update()
+        sleep(1)
+        ball.set_velocity(11, 0)
 
     def check_wall_collision(self, ball: Ball):
         if ball.ycor() <= 0:
@@ -176,13 +186,25 @@ class Game:
         if ball.ycor() >= self.screen_height:
             ball.y_vel = -ball.y_vel
 
+    def check_out_of_bounds(self, ball: Ball, left_score: Score, right_score: Score):
+        if ball.xcor() < 0 - self.ball_size*3:
+            right_score.increment_score()
+            self.reset_ball(ball)
+            print(left_score.score, right_score.score)
+
+        elif ball.xcor() > self.screen_width + self.ball_size*3:
+            left_score.increment_score()
+            self.reset_ball(ball)
+            print(left_score.score, right_score.score)
+
     def check_paddle_collision(self, ball: Ball, paddle: Paddle):
         if (ball.ycor() < paddle.ycor() + paddle.height/2
                 and ball.ycor() > paddle.ycor() - paddle.height/2
                 and ball.xcor() >= paddle.xcor() - paddle.width/2
                 and ball.xcor() <= paddle.xcor() + paddle.width/2):
 
-            print("COLLISION!")
+            print("COLLISION!") # debug
+            
             # code for ball angle calculations
             ball.magnitude *= -1
 
@@ -191,7 +213,8 @@ class Game:
             
             ball.x_vel = ball.magnitude*math.cos(math.radians(angle))
             ball.y_vel = abs(ball.magnitude)*math.sin(math.radians(angle))
-            print(ball.x_vel, ball.y_vel, ball_impact_y, angle)
+            print(ball.x_vel, ball.y_vel, ball_impact_y, angle) # debug
+
 
 def main():
     screen_width = 1000
